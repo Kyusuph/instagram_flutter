@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:instagram_flutter/responsives/mobile_screen_layout.dart';
 import 'package:instagram_flutter/responsives/responsive_layout_screen.dart';
 import 'package:instagram_flutter/responsives/web_screen_layout.dart';
+import 'package:instagram_flutter/screens/login_screen.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 
 void main() async {
@@ -35,10 +37,11 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
       title: 'Instagram Clone',
-      home: const ResponsiveLayoutScreen(
-        mobileScreenLayout: MobileScreenLayout(),
-        webScreenLayout: WebScreenLayout(),
-      ),
+      home: const SignupScreen(),
+      // home: const ResponsiveLayoutScreen(
+      //   mobileScreenLayout: MobileScreenLayout(),
+      //   webScreenLayout: WebScreenLayout(),
+      // ),
     );
   }
 }
