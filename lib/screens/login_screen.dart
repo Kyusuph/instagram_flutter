@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/screens/home_screen.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/utilis.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,16 +15,37 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  void _navigateToSignUlp() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupScreen(),),);
+  }
+
+  void _loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    setState(() {
+      _isLoading = false;
+    });
+    if (res == 'success') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+        ),
+      );
+    } else {
+      showSnapBar(context, res);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,18 +90,27 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               // login button
-              Container(
-                child: const Text('Log in'),
-                width: double.infinity,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: const ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(4),
+              InkWell(
+                onTap: _loginUser,
+                child: Container(
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        )
+                      : const Text('Log in'),
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(4),
+                      ),
                     ),
+                    color: blueColor,
                   ),
-                  color: blueColor,
                 ),
               ),
               const SizedBox(
@@ -96,14 +130,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text("Don't have an account?"),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                  Container(
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: _navigateToSignUlp,
+                    child: Container(
+                      child: const Text(
+                        "Sign up",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                 ],
               ),
@@ -112,5 +149,13 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
   }
 }

@@ -22,13 +22,14 @@ class AuthMethods {
           password.isNotEmpty ||
           bio.isNotEmpty ||
           file != null) {
-            // upload profile pick
-        String photoUrl = await StorageMethods()
-            .uploadImageToStorage('profilePics', file, false);
 
-            // add user to authentification
+        // add user to authentification
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+
+        // upload profile pick
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilePics', file, false);
 
         // Save to your database
         _firestore.collection('users').doc(cred.user!.uid).set({
@@ -40,12 +41,32 @@ class AuthMethods {
           'following': [],
           'photoUrl': photoUrl
         });
+      } else {
+        res = 'Please enter all the fields';
       }
 
       return 'success';
     } catch (err) {
       res = err.toString();
     }
+    return res;
+  }
+
+  Future<String> loginUser(
+      {required String email, required String password}) async {
+    String res = 'Some error occured';
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        UserCredential cred = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = 'success';
+      } else {
+        res = 'Please enter all the fields';
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+
     return res;
   }
 }

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsives/mobile_screen_layout.dart';
+import 'package:instagram_flutter/responsives/responsive_layout.dart';
+import 'package:instagram_flutter/responsives/web_screen_layout.dart';
+import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utilis.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
@@ -35,6 +39,15 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
 
+  _navigateToLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+      ),
+    );
+  }
+
   void selectImage() async {
     Uint8List? _im = await pickImage(ImageSource.gallery);
     setState(() {
@@ -55,6 +68,16 @@ class _SignupScreenState extends State<SignupScreen> {
     );
     if (res != 'success') {
       showSnapBar(context, res);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
     }
     setState(() {
       _isLoading = false;
@@ -151,7 +174,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: primaryColor,
                           ),
                         )
-                      : const Text('Log in'),
+                      : const Text('Sign up'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -176,17 +199,20 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: const Text("Don't have an account?"),
+                    child: const Text("Already have an account?"),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                  Container(
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: _navigateToLogin,
+                    child: Container(
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                 ],
               ),
