@@ -45,7 +45,7 @@ class _CommentCardState extends State<CommentCard> {
                           ),
                         ),
                         TextSpan(
-                          text: widget.comment.description,
+                          text: ' ${widget.comment.description}',
                         ),
                       ],
                     ),
