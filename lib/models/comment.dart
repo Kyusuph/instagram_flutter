@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Post {
+class Comment {
   final String username;
   final String postId;
+  final String commentId;
   final String uid;
   final datePublished;
   final String description;
@@ -10,8 +11,9 @@ class Post {
   final String profileImage;
   final likes;
 
-  Post({
+  Comment({
     required this.username,
+    required this.commentId,
     required this.profileImage,
     required this.datePublished,
     required this.description,
@@ -22,6 +24,7 @@ class Post {
   });
 
   Map<String, dynamic> toJson() => {
+        "commentId": commentId,
         "username": username,
         "uid": uid,
         "datePublished": datePublished,
@@ -32,9 +35,10 @@ class Post {
         "postId": postId,
       };
 
-  static Post fromSnap(DocumentSnapshot snap) {
+  static Comment fromSnap(DocumentSnapshot snap) {
     final snapshot = (snap.data() as Map<String, dynamic>);
-    return Post(
+    return Comment(
+      commentId: snapshot['commentId'],
       username: snapshot['username'],
       profileImage: snapshot['profileImage'],
       likes: snapshot['likes'],
@@ -46,8 +50,9 @@ class Post {
     );
   }
 
-  static Post fromJson(Map<String, dynamic> json) {
-    return Post(
+  static Comment fromJson(Map<String, dynamic> json) {
+    return Comment(
+      commentId: json['commentId'],
       username: json['username'],
       profileImage: json['profileImage'],
       likes: json['likes'],
