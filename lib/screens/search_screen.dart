@@ -64,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
               },
             )
           : FutureBuilder(
-              future: FirebaseFirestore.instance.collection('posts').get(),
+              future: FirebaseFirestore.instance.collection('posts').orderBy('datePublished', descending: true).get(),
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
